@@ -1,10 +1,18 @@
 <template>
   <div class="mx-auto mx-5">
-    <div class="mx-auto max-w-2xl mt-20 ">
-      <h1 class="text-6xl leading-normal mt-0 mb-2 text-black font-serif text-gray-700 dark:text-gray-100 transition-colors">
-        Vote
-      </h1>
-      <p class="ml-4 mb-5 font-serif text-gray-700 dark:text-gray-100 transition-colors">Vote multiple proposals in one shot</p>
+    <div class="mx-auto max-w-2xl mt-20">
+      <header>
+        <h1
+          class="text-6xl leading-normal mt-0 mb-2 text-black font-serif text-gray-700 dark:text-gray-100 transition-colors"
+        >
+          Vote
+        </h1>
+      </header>
+      <p
+        class="ml-4 mb-5 font-serif text-gray-700 dark:text-gray-100 transition-colors"
+      >
+        Vote multiple proposals in one shot
+      </p>
       <h1
         class="text-2xl leading-normal mt-0 mb-2 text-black font-serif text-gray-700 dark:text-gray-100 transition-colors"
       >
@@ -54,6 +62,7 @@
       </span>
     </div>
     <MnemonicsInput :proposals="proposals" v-if="proposals.length > 0" />
+    <AppFooter />
   </div>
 </template>
 <script>
@@ -61,6 +70,7 @@ import axios from 'axios';
 import ProposalsList from '@/components/ProposalsList.vue';
 import { chainsList } from '../config/chains';
 import MnemonicsInput from '../components/MnemonicsInput.vue';
+import AppFooter from '@/components/AppFooter.vue';
 export default {
   created() {
     for (let chain of chainsList) {
@@ -134,6 +144,6 @@ export default {
       }
     },
   },
-  components: { ProposalsList, MnemonicsInput },
+  components: { ProposalsList, MnemonicsInput, AppFooter },
 };
 </script>

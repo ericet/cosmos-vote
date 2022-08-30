@@ -18,7 +18,7 @@
   </div>
 
   <div
-    class="mx-auto max-w-2xl h-72 mt-4 block p-2.5 text-sm text-green-500 bg-black rounded-lg overflow-auto"
+    class="mx-auto max-w-2xl h-72 mb-5 mt-4 block p-2.5 text-sm text-green-500 bg-black rounded-lg overflow-auto"
   >
     <p
       v-for="(log, index) in logs"
