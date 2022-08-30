@@ -97,7 +97,7 @@ export default {
         for (let chain of chainsList) {
           axios
             .get(
-              `https://rest.cosmos.directory/${chain.value}/cosmos/gov/v1beta1/proposals`
+              `https://rest.cosmos.directory/${chain.value}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
             )
             .then((res) => {
               let proposals = res.data.proposals.filter((proposal) => {
