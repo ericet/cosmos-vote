@@ -35,7 +35,7 @@
     />
     <div
       v-if="proposals.length == 0 && ready"
-      class="mx-auto max-w-4xl max-w-2xl mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+      class="mx-auto max-w-2xl mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
       role="alert"
     >
       <span class="block sm:inline">No proposals found!</span>
