@@ -9,31 +9,14 @@
     <AccountsGrid :accounts="accounts" />
   </div>
 
-  <div class="flex flex-col justify-center items-center">
+  <div class="flex flex-col justify-center items-center" v-if="accounts.length>0">
     <button
       type="button"
       @click="vote"
-      class="mt-4 m-auto text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2"
+      class="mt-4 mb-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
     >
       Vote
     </button>
-  </div>
-
-  <div
-    class="mx-auto max-w-2xl h-72 mb-5 mt-4 block p-2.5 text-sm text-green-500 bg-black rounded-lg overflow-auto"
-  >
-    <p
-      v-for="(log, index) in logs"
-      :key="index"
-      class="font-normal"
-      :class="{
-        'text-rose-500': log.type === 'error',
-        'text-green-500': log.type === 'success',
-        'text-amber-400': log.type === 'ready',
-      }"
-    >
-      {{ log.date_time }}: {{ log.message }}
-    </p>
   </div>
 </template>
 <script>
@@ -73,14 +56,6 @@ export default {
       let options = ['Yes', 'Abstain', 'No', 'No with Veto'];
       return options[value - 1];
     },
-    logit(type, output) {
-      let dt = new Date().toLocaleTimeString();
-      this.logs.push({
-        type: type,
-        date_time: dt,
-        message: output,
-      });
-    },
     hasVoted(client, proposal, address) {
       return new Promise((resolve) => {
         client.gov
@@ -112,12 +87,6 @@ export default {
           option: Number(proposal.vote),
         }
       );
-      this.logit(
-        'ready',
-        `【${address}】 is ready to vote '${this.getVoteOption(
-          Number(proposal.vote)
-        )}' on proposal #${proposal.proposal_id}`
-      );
       proposal.status_message = 'Ready to vote!';
 
       proposal.status_code = 'ready';
@@ -125,33 +94,16 @@ export default {
         const res = await signTransaction(wallet, voteTx);
         const broadcastRes = await broadcast(res, chain.rest);
         if (broadcastRes.tx_response.code === 0) {
-          this.logit(
-            'success',
-            `【${address}】 voted '${this.getVoteOption(
-              Number(proposal.vote)
-            )}'' proposal #${proposal.proposal_id}`
-          );
           proposal.status_message = 'Voted';
-
           proposal.status_code = 'success';
         } else {
-          this.logit(
-            'error',
-            `【${address}】 failed to vote '${this.getVoteOption(
-              Number(proposal.vote)
-            )}' on proposal #${proposal.proposal_id}: ${
-              broadcastRes.tx_response.raw_log
-            }`
-          );
           proposal.status_code = 'failed';
           proposal.status_message = 'Failed to vote!';
 
         }
       } catch (err) {
-        this.logit('error', `【${address}】 ${err}`);
         proposal.status_code = 'error';
         proposal.status_message = err;
-
       }
     },
     async voteProposal(client, chain, proposal, address) {
@@ -169,12 +121,6 @@ export default {
         amount: coins(chain.min_tx_fee[0], chain.denom),
         gas: '' + chain.gas,
       };
-      this.logit(
-        'ready',
-        `【${address}】 is ready to vote '${this.getVoteOption(
-          Number(proposal.vote)
-        )}' on proposal #${proposal.proposal_id}`
-      );
 
       proposal.status_code = 'ready';
       proposal.status_message = 'Ready to vote';
@@ -182,31 +128,17 @@ export default {
       try {
         let result = await client.signAndBroadcast(address, ops, fee, '');
         if (result.code == 0) {
-          this.logit(
-            'success',
-            `【${address}】 voted '${this.getVoteOption(
-              Number(proposal.vote)
-            )}'' proposal #${proposal.proposal_id}`
-          );
           proposal.status_code = 'success';
           proposal.status_message = 'Voted';
 
         } else {
-          this.logit(
-            'error',
-            `【${address}】 failed to vote '${this.getVoteOption(
-              Number(proposal.vote)
-            )}' on proposal #${proposal.proposal_id}`
-          );
           proposal.status_code = 'failed';
           proposal.status_message = 'Failed to vote!';
 
         }
       } catch (err) {
-        this.logit('error', `【${address}】 ${err}`);
         proposal.status_code = 'error';
         proposal.status_message = err;
-
       }
     },
     async getQueryClient(rpcEndpoint) {
@@ -220,7 +152,8 @@ export default {
     },
     async vote() {
       this.logs = [];
-      this.logit('success', 'Starting...');
+      this.getWallet()
+    //   this.logit('success', 'Starting...');
       if (this.mnemonics.length > 0) {
         for (let ac of this.accounts) {
           let mnemonic = ac.mnemonic;
@@ -272,26 +205,20 @@ export default {
                     );
                   }
                 } else {
-                  this.logit(
-                    'error',
-                    `【${account.address}】 has already voted proposal #${proposal.proposal_id}`
-                  );
                   proposal.status_code = 'voted';
                   proposal.status_message = 'Already voted!';
-
                 }
               }
             } catch (err) {
-              this.logit('error', err);
               proposal.status_code = 'error';
               proposal.status_message = err;
 
             }
           }
         }
-        this.logit('success', 'Vote Jobs Completed!');
+        // this.logit('success', 'Vote Jobs Completed!');
       } else {
-        this.logit('error', 'No valid mnemonic found!');
+        // this.logit('error', 'No valid mnemonic found!');
       }
     },
     getMnemonics(event) {
