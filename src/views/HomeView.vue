@@ -120,7 +120,7 @@ export default {
       } else {
         axios
           .get(
-            `https://rest.cosmos.directory/${this.selected}/cosmos/gov/v1beta1/proposals`
+            `https://rest.cosmos.directory/${this.selected}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
           )
           .then((res) => {
             let proposals = res.data.proposals.filter((proposal) => {
