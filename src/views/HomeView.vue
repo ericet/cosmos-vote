@@ -1,9 +1,9 @@
 <template>
   <div class="mx-auto mx-5">
-    <div class="mx-auto max-w-2xl mt-20">
+    <div class="mx-auto max-w-2xl">
       <header>
         <h1
-          class="text-6xl leading-normal mt-0 mb-2 text-black font-serif text-gray-700 dark:text-gray-100 transition-colors"
+          class="text-6xl leading-normal mb-2 text-black font-serif text-gray-700 dark:text-gray-100 transition-colors"
         >
           Vote
         </h1>
@@ -14,7 +14,7 @@
         Vote multiple proposals in one shot
       </p>
       <h1
-        class="text-2xl leading-normal mt-0 mb-2 text-black font-serif text-gray-700 dark:text-gray-100 transition-colors"
+        class="text-2xl leading-normal mb-2 text-black font-serif text-gray-700 dark:text-gray-100 transition-colors"
       >
         Chain
       </h1>
