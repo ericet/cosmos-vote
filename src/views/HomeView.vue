@@ -25,15 +25,36 @@
           class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline disabled:cursor-not-allowed"
         >
           <option value="none" hidden>Select a Chain</option>
-          <option value="all">All chains</option>
+          <!-- <option value="all" v-if="!useKeplr">All chains</option> -->
           <option
-            v-for="chain in chainsList"
-            :key="chain.name"
-            :value="chain.value"
+            v-for="option in options"
+            :key="option.value"
+            :value="option.value"
           >
-            {{ chain.name }}
+            {{ option.text }}
           </option>
         </select>
+        <label
+          for="default-toggle"
+          class="inline-flex relative items-center mb-4 cursor-pointer mt-2 ml-2"
+        >
+          <input
+            type="checkbox"
+            v-model="useKeplr"
+            true-value="true"
+            false-value="false"
+            id="default-toggle"
+            class="sr-only peer"
+            @change="toggle"
+          />
+          <div
+            class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+          ></div>
+          <span
+            class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >Use Keplr</span
+          >
+        </label>
       </div>
     </div>
     <ProposalsList
@@ -61,7 +82,11 @@
         </svg>
       </span>
     </div>
-    <MnemonicsInput :proposals="proposals" v-if="proposals.length > 0" />
+    <MnemonicsInput
+      :proposals="proposals"
+      v-if="proposals.length > 0 && useKeplr === 'false'"
+    />
+    <KeplrVote :proposals="proposals" :selected="selected" v-if="proposals.length > 0 && useKeplr"/>
     <AppFooter />
   </div>
 </template>
@@ -71,11 +96,14 @@ import ProposalsList from '@/components/ProposalsList.vue';
 import { chainsList } from '../config/chains';
 import MnemonicsInput from '../components/MnemonicsInput.vue';
 import AppFooter from '@/components/AppFooter.vue';
+import KeplrVote from '../components/KeplrVote.vue';
 export default {
   created() {
     for (let chain of chainsList) {
+      console.log(chain)
       this.$store.state.chainMap.set(chain.value, chain);
     }
+    this.populateOptions();
   },
   data() {
     return {
@@ -83,12 +111,28 @@ export default {
       proposals: [],
       chainsList: chainsList,
       ready: false,
+      useKeplr: true,
+      options: [],
     };
   },
 
   methods: {
+    toggle() {
+      this.proposals = [];
+      this.selected = 'none';
+      this.ready = false;
+      this.populateOptions();
+    },
+    populateOptions() {
+      this.options = [];
+      if (this.useKeplr == 'false') {
+        this.options.push({ text: 'All Chains', value: 'all' });
+      }
+      for (let chain of chainsList) {
+        this.options.push({ text: chain.name, value: chain.value });
+      }
+    },
     getProposals() {
-      console.log(this.$store.state.chainMap);
       this.ready = false;
       this.proposals = [];
       if (this.selected === 'none') {
@@ -120,7 +164,7 @@ export default {
       } else {
         axios
           .get(
-            `https://rest.cosmos.directory/${this.selected}/cosmos/gov/v1beta1/proposals`
+            `https://rest.cosmos.directory/${this.selected}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
           )
           .then((res) => {
             let proposals = res.data.proposals.filter((proposal) => {
@@ -144,6 +188,6 @@ export default {
       }
     },
   },
-  components: { ProposalsList, MnemonicsInput, AppFooter },
+  components: { ProposalsList, MnemonicsInput, AppFooter, KeplrVote },
 };
 </script>

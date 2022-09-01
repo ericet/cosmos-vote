@@ -1,5 +1,6 @@
 export const chainsList = [
     {
+        id: "cosmoshub-4",
         name: 'Cosmos',
         value: "cosmoshub",
         rpc: 'https://rpc.cosmos.directory/cosmoshub',
@@ -12,6 +13,7 @@ export const chainsList = [
         prefix: "cosmos"
     },
     {
+        id: "osmosis-1",
         name: 'Osmosis',
         value: "osmosis",
         rpc: 'https://rpc.cosmos.directory/osmosis',
@@ -24,6 +26,7 @@ export const chainsList = [
         prefix: "osmo"
     },
     {
+        id: "juno-1",
         name: 'Juno',
         value: "juno",
         rpc: 'https://rpc.cosmos.directory/juno',
@@ -36,6 +39,7 @@ export const chainsList = [
         prefix: "juno"
     },
     {
+        id: "akashnet-2",
         name: 'Akash',
         value: "akash",
         rpc: 'https://rpc.cosmos.directory/akash',
@@ -49,6 +53,7 @@ export const chainsList = [
 
     },
     {
+        id: "stargaze-1",
         name: 'Stargaze',
         value: "stargaze",
         rpc: 'https://rpc.cosmos.directory/stargaze',
@@ -62,6 +67,7 @@ export const chainsList = [
 
     },
     {
+        id: "chihuahua-1",
         name: 'Chihuahua',
         value: "chihuahua",
         rpc: 'https://rpc.cosmos.directory/chihuahua',
@@ -75,6 +81,7 @@ export const chainsList = [
 
     },
     {
+        id: 'secret-4',
         name: 'Secret Network',
         value: "secretnetwork",
         rpc: 'https://rpc.cosmos.directory/secretnetwork',
@@ -88,7 +95,7 @@ export const chainsList = [
         prefix: "secret"
     },
     {
-        chain_id: 'crescent-5',
+        id: 'crescent-5',
         name: 'Crescent',
         value: "crescent",
         rpc: 'https://rpc.cosmos.directory/crescent',
@@ -101,7 +108,7 @@ export const chainsList = [
         prefix: "cre"
     },
     {
-        chain_id: 'evmos_9001-2',
+        id: 'evmos_9001-2',
         name: 'Evmos',
         value: "evmos",
         rpc: 'https://rpc.cosmos.directory/evmos',
