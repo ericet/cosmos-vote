@@ -10,12 +10,40 @@
   </div>
 </template>
 <script>
-    import {
+import {
+  QueryClient,
+  setupGovExtension,
+  setupBankExtension,
   SigningStargateClient,
 } from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+
 export default {
   props: ['proposals', 'selected'],
   methods: {
+    hasVoted(client, proposal, address) {
+      return new Promise((resolve) => {
+        client.gov
+          .vote(proposal.proposal_id, address)
+          // eslint-disable-next-line no-unused-vars
+          .then((res) => {
+            resolve(true);
+          })
+          // eslint-disable-next-line no-unused-vars
+          .catch((err) => {
+            resolve(false);
+          });
+      });
+    },
+    async getQueryClient(rpcEndpoint) {
+      const tendermint34Client = await Tendermint34Client.connect(rpcEndpoint);
+      const queryClient = QueryClient.withExtensions(
+        tendermint34Client,
+        setupBankExtension,
+        setupGovExtension
+      );
+      return queryClient;
+    },
     async handleVote() {
       let chain = this.$store.state.chainMap.get(this.selected);
       await window.keplr.enable(chain.id);
@@ -36,23 +64,35 @@ export default {
         gas: '' + gas,
       };
       let ops = [];
+      const queryClient = await this.getQueryClient(chain.rpc);
       for (let proposal of this.proposals) {
-        ops.push({
-          typeUrl: '/cosmos.gov.v1beta1.MsgVote',
-          value:  {
-          proposalId: proposal.proposal_id,
-          voter: accounts[0].address,
-          option: Number(proposal.vote),
-        },
-        });
+        let voted = await this.hasVoted(
+          queryClient,
+          proposal,
+          accounts[0].address
+        );
+        if (!voted) {
+          ops.push({
+            typeUrl: '/cosmos.gov.v1beta1.MsgVote',
+            value: {
+              proposalId: proposal.proposal_id,
+              voter: accounts[0].address,
+              option: Number(proposal.vote),
+            },
+          });
+        }
       }
-      let result = await client.signAndBroadcast(
-        accounts[0].address,
-        ops,
-        fee,
-        ''
-      );
-      console.log(result)
+      if (ops.length > 0) {
+        let result = await client.signAndBroadcast(
+          accounts[0].address,
+          ops,
+          fee,
+          ''
+        );
+        console.log(result);
+      }else{
+        console.log('all voted')
+      }
     },
   },
 };
