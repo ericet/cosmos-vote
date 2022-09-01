@@ -1,20 +1,14 @@
 <template>
   <div class="mx-auto max-w-2xl mt-4">
-    <textarea
-      rows="10"
-      @input="getMnemonics($event)"
+    <textarea rows="10" @input="getMnemonics($event)"
       class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      placeholder="One mnemonic per line"
-    ></textarea>
+      placeholder="One mnemonic per line"></textarea>
     <AccountsGrid :accounts="accounts" />
   </div>
 
-  <div class="flex flex-col justify-center items-center" v-if="accounts.length>0">
-    <button
-      type="button"
-      @click="vote"
-      class="mt-4 mb-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-    >
+  <div class="flex flex-col justify-center items-center" v-if="accounts.length > 0">
+    <button type="button" @click="vote"
+      class="mt-4 mb-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
       Vote
     </button>
   </div>
@@ -88,7 +82,6 @@ export default {
         }
       );
       proposal.status_message = 'Ready to vote!';
-
       proposal.status_code = 'ready';
       try {
         const res = await signTransaction(wallet, voteTx);
@@ -97,9 +90,8 @@ export default {
           proposal.status_message = 'Voted';
           proposal.status_code = 'success';
         } else {
-          proposal.status_code = 'failed';
-          proposal.status_message = 'Failed to vote!';
-
+          proposal.status_code = 'error';
+          proposal.status_message = broadcastRes.tx_response.raw_log;
         }
       } catch (err) {
         proposal.status_code = 'error';
@@ -132,9 +124,8 @@ export default {
           proposal.status_message = 'Voted';
 
         } else {
-          proposal.status_code = 'failed';
-          proposal.status_message = 'Failed to vote!';
-
+          proposal.status_code = 'error';
+          proposal.status_message = broadcastRes.tx_response.raw_log;
         }
       } catch (err) {
         proposal.status_code = 'error';
@@ -150,71 +141,74 @@ export default {
       );
       return queryClient;
     },
+    async startVoting(mnemonic, proposals) {
+      for (let proposal of proposals) {
+        let chain = this.$store.state.chainMap.get(proposal.chain);
+        try {
+          let accounts = [];
+          let wallet;
+          let client;
+          if (chain.name === 'Evmos') {
+            wallet = Wallet.fromMnemonic(mnemonic);
+            let address = await wallet.getAddress();
+            accounts.push({ address: ethToEvmos(address) });
+          } else {
+            wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
+              hdPaths: chain.hd_path
+                ? [stringToPath(chain.hd_path)]
+                : undefined,
+              prefix: chain.prefix,
+            });
+            client = await SigningStargateClient.connectWithSigner(
+              chain.rpc,
+              wallet
+            );
+            accounts = await wallet.getAccounts();
+          }
+          const queryClient = await this.getQueryClient(chain.rpc);
+          for (let account of accounts) {
+            let voted = await this.hasVoted(
+              queryClient,
+              proposal,
+              account.address
+            );
+            if (!voted) {
+              if (chain.name === 'Evmos') {
+                await this.voteProposalEvmos(
+                  wallet,
+                  chain,
+                  proposal,
+                  account.address
+                );
+              } else {
+                await this.voteProposal(
+                  client,
+                  chain,
+                  proposal,
+                  account.address
+                );
+              }
+            } else {
+              proposal.status_code = 'voted';
+              proposal.status_message = 'Already voted!';
+            }
+          }
+        } catch (err) {
+          proposal.status_code = 'error';
+          proposal.status_message = err;
+
+        }
+      }
+    },
     async vote() {
       this.logs = [];
       this.getWallet()
-    //   this.logit('success', 'Starting...');
+      //   this.logit('success', 'Starting...');
       if (this.mnemonics.length > 0) {
         for (let ac of this.accounts) {
           let mnemonic = ac.mnemonic;
           let proposals = ac.proposals;
-          for (let proposal of proposals) {
-            let chain = this.$store.state.chainMap.get(proposal.chain);
-            try {
-              let accounts = [];
-              let wallet;
-              let client;
-              if (chain.name === 'Evmos') {
-                wallet = Wallet.fromMnemonic(mnemonic);
-                let address = await wallet.getAddress();
-                accounts.push({ address: ethToEvmos(address) });
-              } else {
-                wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
-                  hdPaths: chain.hd_path
-                    ? [stringToPath(chain.hd_path)]
-                    : undefined,
-                  prefix: chain.prefix,
-                });
-                client = await SigningStargateClient.connectWithSigner(
-                  chain.rpc,
-                  wallet
-                );
-                accounts = await wallet.getAccounts();
-              }
-              const queryClient = await this.getQueryClient(chain.rpc);
-              for (let account of accounts) {
-                let voted = await this.hasVoted(
-                  queryClient,
-                  proposal,
-                  account.address
-                );
-                if (!voted) {
-                  if (chain.name === 'Evmos') {
-                    await this.voteProposalEvmos(
-                      wallet,
-                      chain,
-                      proposal,
-                      account.address
-                    );
-                  } else {
-                    await this.voteProposal(
-                      client,
-                      chain,
-                      proposal,
-                      account.address
-                    );
-                  }
-                } else {
-                  proposal.status_code = 'voted';
-                  proposal.status_message = 'Already voted!';
-                }
-              }
-            } catch (err) {
-              proposal.status_code = 'error';
-              proposal.status_message = err;
-
-            }
-          }
+          this.startVoting(mnemonic, proposals)
         }
         // this.logit('success', 'Vote Jobs Completed!');
       } else {
