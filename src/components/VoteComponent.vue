@@ -103,7 +103,7 @@ export default {
 
         } else {
           proposal.status_code = 'error';
-          proposal.status_message = broadcastRes.tx_response.raw_log;
+          proposal.status_message = result.raw_log;
         }
       } catch (err) {
         proposal.status_code = 'error';
