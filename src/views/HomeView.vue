@@ -72,6 +72,14 @@ export default {
     }
     this.populateOptions();
   },
+  mounted(){
+    window.addEventListener('keplr_keystorechange', () => {
+      this.proposals = [];
+      this.selected = 'none';
+      this.ready = false;
+      this.populateOptions();
+        });
+  },
   data() {
     return {
       selected: 'none',
