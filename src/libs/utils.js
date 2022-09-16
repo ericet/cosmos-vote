@@ -41,14 +41,14 @@ export function extractAccountNumberAndSequence(ret) {
     return client.sign(addr, messages, fee, memo, signerData)
   }
 
-  export async function broadcastTx(bodyBytes, chain_id,chain_value) {
+  export async function broadcastTx(bodyBytes, chain) {
     const txbytes = bodyBytes.authInfoBytes ? TxRaw.encode(bodyBytes).finish() : bodyBytes
     const txString = toBase64(txbytes)
     const txRaw = {
       tx_bytes: txString,
       mode: 'BROADCAST_MODE_SYNC', 
     }
-    return axios.post(`https://rest.cosmos.directory/${chain_value}/cosmos/tx/v1beta1/txs`, txRaw, chain_id).then(res => {
+    return axios.post(`${chain.rest}/cosmos/tx/v1beta1/txs`, txRaw, chain.id).then(res => {
       if (res.code && res.code !== 0) {
         throw new Error(res.message)
       }

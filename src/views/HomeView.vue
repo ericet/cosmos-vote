@@ -186,7 +186,7 @@ export default {
         for (let chain of chainsList) {
           axios
             .get(
-              `https://rest.cosmos.directory/${chain.value}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
+              `${chain.rest}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
             )
             .then((res) => {
               let proposals = res.data.proposals.filter((proposal) => {
@@ -216,7 +216,7 @@ export default {
         const queryClient = await this.getQueryClient(chain.rpc);
         axios
           .get(
-            `https://rest.cosmos.directory/${this.selected}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
+            `${chain.rest}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
           )
           .then(async (res) => {
             let proposals = res.data.proposals.filter((proposal) => {
@@ -240,7 +240,7 @@ export default {
               }
               axios
                 .get(
-                  `https://rest.cosmos.directory/${this.selected}/cosmos/auth/v1beta1/accounts/${this.account.address}`
+                  `${chain.rest}/cosmos/auth/v1beta1/accounts/${this.account.address}`
                 )
                 .then((res) => {
                   if (res.status === 200) {

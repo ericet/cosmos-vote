@@ -1,10 +1,7 @@
 <template>
   <div class="flex flex-col justify-center items-center">
-    <button
-      type="button"
-      @click="handleVote"
-      class="mt-4 mb-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-    >
+    <button type="button" @click="handleVote"
+      class="mt-4 mb-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
       Vote
     </button>
   </div>
@@ -83,8 +80,14 @@ export default {
       if (ops.length > 0) {
         sign(chain.id, this.account.address, ops, fee, '', signerData).then(
           (bodyBytes) => {
-            broadcastTx(bodyBytes, chain.id,chain.value).then((res) => {
-              console.log(res);
+            broadcastTx(bodyBytes, chain).then((res) => {
+              if (res.data.tx_response.code === 0) {
+                console.log('voted successfully')
+                console.log(res.data)
+              } else {
+                console.log('error')
+                console.log(res.data.tx_response.raw_log)
+              }
             });
           }
         );
