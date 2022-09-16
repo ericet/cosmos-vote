@@ -1,7 +1,10 @@
 <template>
   <div class="flex flex-col justify-center items-center">
-    <button type="button" @click="handleVote"
-      class="mt-4 mb-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+    <button
+      type="button"
+      @click="handleVote"
+      class="mt-4 mb-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+    >
       Vote
     </button>
   </div>
@@ -16,6 +19,11 @@ import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { sign, broadcastTx } from '@/libs/utils';
 
 export default {
+  data() {
+    return {
+      response: {},
+    };
+  },
   props: ['proposals', 'selected', 'account'],
   methods: {
     hasVoted(client, proposal, address) {
@@ -42,6 +50,7 @@ export default {
       return queryClient;
     },
     async handleVote() {
+      this.response = {};
       let chain = this.$store.state.chainMap.get(this.selected);
       let gas = chain.gas * this.proposals.length;
       const fee = {
@@ -82,17 +91,26 @@ export default {
           (bodyBytes) => {
             broadcastTx(bodyBytes, chain).then((res) => {
               if (res.data.tx_response.code === 0) {
-                console.log('voted successfully')
-                console.log(res.data)
+                console.log('voted successfully');
+                console.log(res.data);
+                this.response.type = 'success';
+                this.response.message = res.data.tx_response.txhash;
               } else {
-                console.log('error')
-                console.log(res.data.tx_response.raw_log)
+                console.log('error');
+                console.log(res.data.tx_response.raw_log);
+                this.response.type = 'error';
+                this.response.message = res.data.tx_response.raw_log;
               }
+              this.$emit('handleResponse', this.response);
             });
           }
         );
       } else {
         console.log('all voted');
+        this.response.type='voted';
+        this.response.message='All proposals have been voted!'
+        this.$emit('handleResponse', this.response);
+
       }
     },
   },

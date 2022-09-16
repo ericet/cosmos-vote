@@ -67,20 +67,6 @@ export const chainsList = [
 
     },
     {
-        id: "chihuahua-1",
-        name: 'Chihuahua',
-        value: "chihuahua",
-        rpc: 'https://rpc.cosmos.directory/chihuahua',
-        rest: 'https://rest.cosmos.directory/chihuahua',
-        symbol: 'HUAHUA',
-        denom: "uhuahua",
-        exponent: 6,
-        min_tx_fee: ["8000", "8000"],
-        gas: 80000,
-        prefix: "chihuahua"
-
-    },
-    {
         id: 'secret-4',
         name: 'Secret Network',
         value: "secretnetwork",
@@ -95,19 +81,6 @@ export const chainsList = [
         prefix: "secret"
     },
     {
-        id: 'crescent-5',
-        name: 'Crescent',
-        value: "crescent",
-        rpc: 'https://rpc.cosmos.directory/crescent',
-        rest: 'https://rest.cosmos.directory/crescent',
-        symbol: 'CRE',
-        denom: "ucre",
-        exponent: 6,
-        min_tx_fee: ["0", "0"],
-        gas: 160000,
-        prefix: "cre"
-    },
-    {
         id: 'evmos_9001-2',
         name: 'Evmos',
         value: "evmos",
@@ -120,5 +93,18 @@ export const chainsList = [
         min_tx_fee: ["4000000000000000", "0"],
         gas: 200000,
         prefix: "evmos"
+    },
+    {
+        id: 'stride-1',
+        name: 'Stride',
+        value: "stride",
+        rpc: 'https://rpc.cosmos.directory/stride',
+        rest: 'https://rest.cosmos.directory/stride',
+        symbol: 'STRD',
+        denom: "ustrd",
+        exponent: 6,
+        min_tx_fee: ["0", "0"],
+        gas: 250000,
+        prefix: "stride"
     },
 ];
