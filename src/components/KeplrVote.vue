@@ -46,11 +46,6 @@ export default {
     },
     async handleVote() {
       let chain = this.$store.state.chainMap.get(this.selected);
-      // const offlineSigner = window.getOfflineSigner(chain.id);
-      // const client = await SigningStargateClient.connectWithSigner(
-      //   chain.rpc,
-      //   offlineSigner
-      // );
       let gas = chain.gas * this.proposals.length;
       const fee = {
         amount: [
@@ -88,7 +83,7 @@ export default {
       if (ops.length > 0) {
         sign(chain.id, this.account.address, ops, fee, '', signerData).then(
           (bodyBytes) => {
-            broadcastTx(bodyBytes, chain.id).then((res) => {
+            broadcastTx(bodyBytes, chain.id,chain.value).then((res) => {
               console.log(res);
             });
           }
