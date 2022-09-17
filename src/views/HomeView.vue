@@ -188,7 +188,7 @@
     </div>
     <MnemonicsInput
       :proposals="proposals"
-      v-if="proposals.length > 0 && useKeplr === 'false'"
+      v-if="proposals.length > 0 && (useKeplr === 'false' || useKeplr ===false)"
     />
     <KeplrVote
       :proposals="proposals"
