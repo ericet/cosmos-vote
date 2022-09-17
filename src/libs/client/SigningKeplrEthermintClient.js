@@ -14,7 +14,6 @@ export default class SigningKeplerEthermintClient {
     }
     async sign(signerAddress, messages, fee, memo, explicitSignerData) {
         const account = await this.signer.getAccounts();
-        console.log(account)
         const acc = account.find(x => x.address === signerAddress);
         if (!acc) {
             throw new Error('The signer address dose not exsits in Ledger!');

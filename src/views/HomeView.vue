@@ -61,7 +61,6 @@
         id="alert-3"
         class="flex p-4 mb-4 bg-green-100 rounded-lg dark:bg-green-200 mx-auto max-w-2xl"
         role="alert"
-        @click="close"
         v-if="response.type == 'success'"
       >
         <svg
@@ -83,7 +82,8 @@
         >
           Voted successfully! TX Hash:
           <a
-            href="#"
+            :href='response.explorer+"/txs/"+response.message'
+            target="_blank"
             class="font-semibold underline hover:text-green-800 dark:hover:text-green-900"
             >{{ response.message }}</a
           >.
@@ -93,6 +93,7 @@
           class="ml-auto -mx-1.5 -my-1.5 bg-green-100 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex h-8 w-8 dark:bg-green-200 dark:text-green-600 dark:hover:bg-green-300"
           data-dismiss-target="#alert-3"
           aria-label="Close"
+          @click="close"
         >
           <span class="sr-only">Close</span>
           <svg
@@ -115,7 +116,7 @@
         class="flex p-4 mb-4 bg-red-100 rounded-lg dark:bg-red-200"
         role="alert"
         v-else-if="response.type == 'error'"
-        @click="close"
+       
       >
         <svg
           aria-hidden="true"
@@ -140,6 +141,7 @@
           class="ml-auto -mx-1.5 -my-1.5 bg-red-100 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex h-8 w-8 dark:bg-red-200 dark:text-red-600 dark:hover:bg-red-300"
           data-dismiss-target="#alert-2"
           aria-label="Close"
+          @click="close"
         >
           <span class="sr-only">Close</span>
           <svg
@@ -234,7 +236,7 @@ export default {
       proposals: [],
       chainsList: chainsList,
       ready: false,
-      useKeplr: true,
+      useKeplr: false,
       options: [],
       account: null,
       response: {},
@@ -257,7 +259,7 @@ export default {
     },
     populateOptions() {
       this.options = [];
-      if (this.useKeplr == 'false') {
+      if (this.useKeplr === 'false' || this.useKeplr === false) {
         this.options.push({ text: 'All Chains', value: 'all' });
       }
       for (let chain of chainsList) {
@@ -335,7 +337,6 @@ export default {
         const offlineSigner = window.getOfflineSigner(chain.id);
         const accounts = await offlineSigner.getAccounts();
         this.account = accounts[0];
-        console.log(this.account.address);
         const queryClient = await this.getQueryClient(chain.rpc);
         axios
           .get(
@@ -353,7 +354,6 @@ export default {
                   proposal,
                   this.account.address
                 );
-                console.log(voted);
                 if (!voted) {
                   proposal.chain = chain.value;
                   proposal.chain_name = chain.name;
@@ -372,7 +372,6 @@ export default {
                     this.account.sequence = account.sequence;
                   }
                 });
-              // this.proposals = this.proposals.concat(proposals);
             }
             this.ready = true;
           })
