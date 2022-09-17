@@ -195,7 +195,7 @@
       :selected="selected"
       :account="account"
       @handleResponse="handleResponse"
-      v-if="proposals.length > 0 && useKeplr"
+      v-if="proposals.length > 0 && (useKeplr==true || useKeplr ==='true')"
     />
     <AppFooter />
   </div>
