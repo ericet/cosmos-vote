@@ -1,10 +1,21 @@
 # Cosmos-based Auto Vote Tool
 
-Vote multiple cosmos-based propsals in one single shot. Currently, it supports Cosmos, Osmosis, Juno, Stargaze, Chihuahua, Akash, Crescent, Secret Network and Evmos
+Vote multiple cosmos-based propsals in one single shot. 
 
-![image.png](https://cdn.steemitimages.com/DQmbxjAjebfE7BkMumiCrAG9HXhTfQ9HqyCxDq1xDu6E26Q/image.png)
+Networks currently support:Cosmos, Osmosis, Juno, Stargaze, Akash, Secret Network, Stride and Evmos
+
+Use Mnemonics or Keplr to vote
+
+
+## Use Mnemonics(One Mnemonic per line)
+![image.png](https://cdn.steemitimages.com/DQmUzyfRsbvZFEzFLV2fk1tggf9ZniuGKvbCn9vz4UXVX4p/image.png)
 
 ![image.png](https://cdn.steemitimages.com/DQmNicB6oz1QjZuCTtghBGBNhPbhKURSESWf3W4EV4LZBpR/image.png)
+
+## Use Keplr(Recommended)
+![](https://cdn.steemitimages.com/DQmRPHNiNaeTTLnThVEdvKyA2rC2t4DrjRrbzTMjZaqK8bx/image.png)
+![](https://cdn.steemitimages.com/DQmXQ65nC7eGETi2F6EAt13a4RyZy78gHoiHc8NeyRANdsC/image.png)
+![](https://cdn.steemitimages.com/DQmZBpo3YXiDPro5aMDWPekRtin4ZagXmVYNM2oC5LjunmC/image.png)
 
 ## Demo URL
 https://ericet.github.io/cosmos-vote/
@@ -25,6 +36,12 @@ https://ericet.github.io/cosmos-vote/
 4. Start the dev server
 
 `npm run serve`
+
+## Support My Works
+* Donations:
+  * ETH/BNB/XDAI: 0x434DCffCF7dABd48B284860C27ebd184C91341F5
+  * Cosmos: cosmos1q23hjqp3fv3v2fjxp3zvknelx53qfc4v6uzq6w
+* Stake with My Validator "ericet" on Evmos, Rebus, Stride, Canto, Likecoin, Desmos, etc
 
 # P.S: Use the tool at your own risk. 
 
