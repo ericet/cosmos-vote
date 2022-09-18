@@ -8,7 +8,7 @@ Use Mnemonics/Private Key or Keplr to vote
 
 
 ## Use Mnemonics/Private Key(One Mnemonic/Private Key per line)
-![image.png](https://cdn.steemitimages.com/DQmUzyfRsbvZFEzFLV2fk1tggf9ZniuGKvbCn9vz4UXVX4p/image.png)
+![image.png](https://cdn.steemitimages.com/DQmbRrHjfoto2hHgFZ5eLiS2m53pzSYYm4LfxDkfdA26ZsN/image.png)
 
 ![image.png](https://cdn.steemitimages.com/DQmNicB6oz1QjZuCTtghBGBNhPbhKURSESWf3W4EV4LZBpR/image.png)
 
