@@ -8,6 +8,7 @@
 </template>
 <script>
 import { coins, Secp256k1HdWallet } from '@cosmjs/launchpad';
+import { DirectSecp256k1Wallet } from "@cosmjs/proto-signing"
 import { stringToPath } from '@cosmjs/crypto';
 import { Wallet } from '@ethersproject/wallet';
 import { ethToEvmos } from '@tharsis/address-converter';
@@ -25,6 +26,9 @@ import {
   SigningStargateClient,
 } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { validatePrivateKey } from '@/libs/utils';
+import { fromHex } from "@cosmjs/encoding"
+
 export default {
   props: ['accounts'],
   methods: {
@@ -119,7 +123,7 @@ export default {
       );
       return queryClient;
     },
-    async startVoting(mnemonic, proposals) {
+    async startVoting(key, proposals) {
       for (let proposal of proposals) {
         let chain = this.$store.state.chainMap.get(proposal.chain);
         try {
@@ -127,16 +131,25 @@ export default {
           let wallet;
           let client;
           if (chain.name === 'Evmos') {
-            wallet = Wallet.fromMnemonic(mnemonic);
+            if (validatePrivateKey(key)) {
+              wallet = new Wallet(key);
+            } else {
+              wallet = Wallet.fromMnemonic(key);
+            }
             let address = await wallet.getAddress();
             accounts.push({ address: ethToEvmos(address) });
           } else {
-            wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
-              hdPaths: chain.hd_path
-                ? [stringToPath(chain.hd_path)]
-                : undefined,
-              prefix: chain.prefix,
-            });
+            let isvalid = validatePrivateKey(key)
+            if (isvalid) {
+              wallet = await DirectSecp256k1Wallet.fromKey(fromHex(key),chain.prefix)
+            } else {
+              wallet = await Secp256k1HdWallet.fromMnemonic(key, {
+                hdPaths: chain.hd_path
+                  ? [stringToPath(chain.hd_path)]
+                  : undefined,
+                prefix: chain.prefix,
+              });
+            }
             client = await SigningStargateClient.connectWithSigner(
               chain.rpc,
               wallet
@@ -181,13 +194,11 @@ export default {
     async vote() {
       this.logs = [];
       this.clearVoteStatus()
-      //   this.logit('success', 'Starting...');
-        for (let ac of this.accounts) {
-          let mnemonic = ac.mnemonic;
-          let proposals = ac.proposals;
-          this.startVoting(mnemonic, proposals)
-        }
-        // this.logit('success', 'Vote Jobs Completed!');
+      for (let ac of this.accounts) {
+        let key = ac.key;
+        let proposals = ac.proposals;
+        this.startVoting(key, proposals)
+      }
     },
     clearVoteStatus() {
       for (let account of this.accounts) {

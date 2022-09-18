@@ -97,7 +97,7 @@
         </svg>
       </span>
     </div>
-    <MnemonicsInput :proposals="proposals" v-if="proposals.length > 0 && (useKeplr === 'false' || useKeplr ===false)" />
+    <KeysInput :proposals="proposals" v-if="proposals.length > 0 && (useKeplr === 'false' || useKeplr ===false)" />
     <KeplrVote :proposals="proposals" :selected="selected" :account="account" @handleResponse="handleResponse"
       v-if="proposals.length > 0 && (useKeplr==true || useKeplr ==='true')" />
     <AppFooter />
@@ -107,7 +107,7 @@
 import axios from 'axios';
 import ProposalsList from '@/components/ProposalsList.vue';
 import { chainsList } from '../config/chains';
-import MnemonicsInput from '../components/MnemonicsInput.vue';
+import KeysInput from '../components/KeysInput.vue';
 import AppFooter from '@/components/AppFooter.vue';
 import KeplrVote from '../components/KeplrVote.vue';
 import {
@@ -296,6 +296,6 @@ export default {
       }
     },
   },
-  components: { ProposalsList, MnemonicsInput, AppFooter, KeplrVote },
+  components: { ProposalsList, KeysInput, AppFooter, KeplrVote },
 };
 </script>

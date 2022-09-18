@@ -3,6 +3,7 @@ import { toBase64 } from '@cosmjs/encoding';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import axios from 'axios';
 import SigningKeplerEthermintClient from './client/SigningKeplrEthermintClient'
+import { Wallet } from '@ethersproject/wallet';
 
 export function extractAccountNumberAndSequence(ret) {
     let { account } = ret
@@ -58,3 +59,12 @@ export function extractAccountNumberAndSequence(ret) {
       return res
     })
   }
+
+  export function validatePrivateKey(value) {
+    try {
+        new Wallet(value);
+    } catch (e) { 
+      console.log(e)
+      return false; }
+    return true;
+}
