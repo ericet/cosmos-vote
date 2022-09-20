@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@cosmjs/crypto": "^0.28.13",
+    "@cosmjs/encoding": "^0.29.0",
     "@cosmjs/launchpad": "^0.27.1",
+    "@cosmjs/math": "^0.29.0",
     "@cosmjs/stargate": "^0.28.13",
     "@cosmjs/tendermint-rpc": "^0.28.13",
     "@ethersproject/wallet": "^5.7.0",
@@ -20,6 +22,7 @@
     "axios": "^0.27.2",
     "bip39": "^3.0.4",
     "core-js": "^3.8.3",
+    "cosmjs-types": "^0.5.1",
     "feather-icons": "^4.29.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "vue": "^3.2.13",
