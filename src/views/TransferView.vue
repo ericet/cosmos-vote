@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-6xl text-center">Home View</h1>
+    <h1 class="text-6xl text-center">Transfer View</h1>
   </div>
 </template>
 

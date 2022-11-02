@@ -1,21 +1,23 @@
 <template>
   <div :class="appTheme" class="pt-0.5">
-    <AppHeader />
-
-    <transition name="fade" mode="out-in">
-			<router-view :theme="appTheme" />
-		</transition>
+	<div class="h-screen flex">
+    <AppMenu />
+    <div class="flex-1 flex overflow-hidden">
+      <div class="flex-1 overflow-y-scroll">
+        <router-view :theme="appTheme" />
+      </div>
+    </div>
+  </div>
     
   </div>
 </template>
 
 <script>
-import AppHeader from './components/AppHeader';
+import AppMenu from '@/components/AppMenu';
 import feather from 'feather-icons';
-
 export default {
   components: {
-		AppHeader,
+		AppMenu,
 	},
   data: () => {
 		return {
