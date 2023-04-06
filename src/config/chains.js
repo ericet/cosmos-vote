@@ -115,4 +115,18 @@ export const chainsList = [
         gas: 250000,
         prefix: "stride"
     },
+    {
+        id: 'nibiru-itn-1',
+        name: 'Nibiru Testnet',
+        value: "nibiru",
+        explorer: 'https://nibiru.explorers.guru/',
+        rpc: 'https://nibiru-testnet.nodejumper.io:443',
+        rest: 'https://nibiru-testnet.nodejumper.io:1317',
+        symbol: 'NIBI',
+        denom: "unibi",
+        exponent: 6,
+        min_tx_fee: ["0", "0"],
+        gas: 250000,
+        prefix: "nibi"
+    },
 ];
