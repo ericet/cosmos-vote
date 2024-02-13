@@ -94,6 +94,7 @@ export const chainsList = [
         rpc: 'https://rpc.cosmos.directory/evmos',
         rest: 'https://rest.cosmos.directory/evmos',
         hd_path: "m/44'/60'/0'/0/0",
+        slip44:60,
         symbol: 'EVMOS',
         denom: "aevmos",
         exponent: 18,
@@ -114,19 +115,36 @@ export const chainsList = [
         min_tx_fee: ["0", "0"],
         gas: 250000,
         prefix: "stride"
+    }
+    ,
+    {
+        id: 'dymension_1100-1',
+        name: 'Dymension',
+        value: "dymension",
+        explorer: 'https://www.mintscan.io/dymension',
+        rpc: 'https://rpc.cosmos.directory/dymension',
+        rest: 'https://rest.cosmos.directory/dymension',
+        hd_path: "m/44'/60'/0'/0/0",
+        slip44:60,
+        symbol: 'DYM',
+        denom: "adym",
+        exponent: 18,
+        min_tx_fee: ["4000000000000000", "0"],
+        gas: 200000,
+        prefix: "dym"
     },
     {
-        id: 'nibiru-itn-1',
-        name: 'Nibiru Testnet',
-        value: "nibiru",
-        explorer: 'https://nibiru.explorers.guru/',
-        rpc: 'https://nibiru-testnet.nodejumper.io:443',
-        rest: 'https://nibiru-testnet.nodejumper.io:1317',
-        symbol: 'NIBI',
-        denom: "unibi",
+        id: 'celestia',
+        name: 'Celestia',
+        value: "celestia",
+        explorer: 'https://www.mintscan.io/celestia',
+        rpc: 'https://rpc.cosmos.directory/celestia',
+        rest: 'https://rest.cosmos.directory/celestia',
+        symbol: 'TIA',
+        denom: "ustia",
         exponent: 6,
-        min_tx_fee: ["0", "0"],
+        min_tx_fee: ["3000", "120"],
         gas: 250000,
-        prefix: "nibi"
-    },
+        prefix: "stride"
+    }
 ];

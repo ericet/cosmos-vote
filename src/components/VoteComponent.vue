@@ -10,8 +10,6 @@
 import { coins, Secp256k1HdWallet } from '@cosmjs/launchpad';
 import { DirectSecp256k1Wallet } from "@cosmjs/proto-signing"
 import { stringToPath } from '@cosmjs/crypto';
-import { Wallet } from '@ethersproject/wallet';
-import { ethToEvmos } from '@tharsis/address-converter';
 import { createTxMsgVote } from '@tharsis/transactions';
 import {
   broadcast,
@@ -28,6 +26,10 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { validatePrivateKey } from '@/libs/utils';
 import { fromHex } from "@cosmjs/encoding"
+import {
+    PrivateKey,
+    InjectiveDirectEthSecp256k1Wallet
+} from "@injectivelabs/sdk-ts"
 
 export default {
   props: ['accounts'],
@@ -130,14 +132,17 @@ export default {
           let accounts = [];
           let wallet;
           let client;
-          if (chain.name === 'Evmos') {
+          if (chain.slip44 && chain.slip44 === 60) {
             if (validatePrivateKey(key)) {
-              wallet = new Wallet(key);
+              wallet = (await InjectiveDirectEthSecp256k1Wallet.fromKey(
+                    Buffer.from(key, "hex"), chain.prefix));
             } else {
-              wallet = Wallet.fromMnemonic(key);
+              const privateKeyFromMnemonic = PrivateKey.fromMnemonic(key)
+                wallet = (await InjectiveDirectEthSecp256k1Wallet.fromKey(
+                    Buffer.from(privateKeyFromMnemonic.toPrivateKeyHex().replace("0x", ""), "hex"), chain.prefix))
             }
-            let address = await wallet.getAddress();
-            accounts.push({ address: ethToEvmos(address) });
+            const [account] = await wallet.getAccounts();
+            accounts.push({ address: account.address });
           } else {
             let isvalid = validatePrivateKey(key)
             if (isvalid) {
@@ -164,7 +169,7 @@ export default {
               account.address
             );
             if (!voted) {
-              if (chain.name === 'Evmos') {
+              if (chain.slip44 && chain.slip44 === 60) {
                 await this.voteProposalEvmos(
                   wallet,
                   chain,

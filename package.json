@@ -17,6 +17,7 @@
     "@cosmjs/tendermint-rpc": "^0.28.13",
     "@ethersproject/wallet": "^5.7.0",
     "@hanchon/evmos-ts-wallet": "^0.1.1",
+    "@injectivelabs/sdk-ts": "^1.14.5",
     "@tharsis/address-converter": "^0.1.8",
     "@tharsis/transactions": "^0.2.6",
     "axios": "^0.27.2",
