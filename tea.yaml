@@ -1,0 +1,7 @@
+# https://tea.xyz/what-is-this-file
+# created with https://mash.pkgx.sh/mxcl/tea-register
+---
+version: 1.0.0
+codeOwners:
+  - '0x254C14c570110Cb47c9854500087Fe3E6Ec01bA8'  # danny-pham
+quorum: 1
