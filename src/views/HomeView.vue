@@ -321,8 +321,8 @@ export default {
               });
               if (proposals.length > 0) {
                 for (let proposal of proposals) {
-                  proposal.chain = chainName;
-                  proposal.chain_name = chain.name;
+                  proposal.chain = chain;
+                  proposal.chain_name = chainName;
                   proposal.vote = '1';
                 }
                 this.proposals = this.proposals.concat(proposals);
@@ -334,8 +334,6 @@ export default {
         }
         this.ready = true;
       } else {
-        console.log(this.selected);
-        console.log(this.$store.state.chainMap)
         let chain = this.$store.state.chainMap.get(this.selected);
 
         const queryClient = await this.getQueryClient(chain.rpc);
@@ -358,7 +356,6 @@ export default {
               this.account = accounts[0];
               if (proposals.length > 0) {
                 let chain = this.$store.state.chainMap.get(this.selected);
-                console.log(chain)
                 for (let proposal of proposals) {
                   let voted = await this.hasVoted(
                     queryClient,
@@ -367,7 +364,7 @@ export default {
                   );
                   if (!voted) {
                     proposal.chain = chain;
-                    proposal.chain_name = chain.name;
+                    proposal.chain_name = this.selected;
                     proposal.vote = '1';
                     this.proposals.push(proposal);
                   }
@@ -395,7 +392,7 @@ export default {
               if (proposals.length > 0) {
                 for (let proposal of proposals) {
                   proposal.chain = chain;
-                  proposal.chain_name = chain.name;
+                  proposal.chain_name = this.selected;
                   proposal.vote = '1';
                 }
                 this.proposals = this.proposals.concat(proposals);
