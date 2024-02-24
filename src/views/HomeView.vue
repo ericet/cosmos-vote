@@ -218,7 +218,7 @@ import { extractAccountNumberAndSequence } from '@/libs/utils';
 export default {
   created() {
     for (let chainName in chainsMap) {
-      this.$store.state.chainMap.set(chainsMap[chainName].name, chainsMap[chainName]);
+      this.$store.state.chainMap.set(chainName, chainsMap[chainName]);
     }
     this.populateOptions();
   },
@@ -264,7 +264,7 @@ export default {
         this.options.push({ text: 'All Chains', value: 'all' });
       }
       for (let chainName in chainsMap) {
-        this.options.push({ text: chainName, value: chainsMap[chainName].name });
+        this.options.push({ text: chainName, value: chainName });
       }
       this.options.sort((a, b) => {
         if (a.value === 'all' || b.value === 'all') {
@@ -334,6 +334,8 @@ export default {
         }
         this.ready = true;
       } else {
+        console.log(this.selected);
+        console.log(this.$store.state.chainMap)
         let chain = this.$store.state.chainMap.get(this.selected);
 
         const queryClient = await this.getQueryClient(chain.rpc);
@@ -350,12 +352,13 @@ export default {
                 alert('Please install keplr extension');
                 return;
               }
-              await window.keplr.enable(chain.id);
-              const offlineSigner = window.getOfflineSigner(chain.id);
+              await window.keplr.enable(chain.chainId);
+              const offlineSigner = window.getOfflineSigner(chain.chainId);
               const accounts = await offlineSigner.getAccounts();
               this.account = accounts[0];
               if (proposals.length > 0) {
                 let chain = this.$store.state.chainMap.get(this.selected);
+                console.log(chain)
                 for (let proposal of proposals) {
                   let voted = await this.hasVoted(
                     queryClient,
@@ -363,7 +366,7 @@ export default {
                     this.account.address
                   );
                   if (!voted) {
-                    proposal.chain = chain.value;
+                    proposal.chain = chain;
                     proposal.chain_name = chain.name;
                     proposal.vote = '1';
                     this.proposals.push(proposal);
@@ -391,7 +394,7 @@ export default {
             } else {
               if (proposals.length > 0) {
                 for (let proposal of proposals) {
-                  proposal.chain = chain.value;
+                  proposal.chain = chain;
                   proposal.chain_name = chain.name;
                   proposal.vote = '1';
                 }
