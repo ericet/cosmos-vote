@@ -10,6 +10,8 @@
       "exponent": 6,
       "gasPrice": "0.005uatom",
       "gasLimitRatio": 1.2,
+      "min_tx_fee": ["312", "0"],
+      "gas": 100000,
       "prefix": "cosmos"
    },
    "Osmosis": {
@@ -23,6 +25,8 @@
       "exponent": 6,
       "gasPrice": "0.0025uosmo",
       "gasLimitRatio": 1.05,
+      "min_tx_fee": ["0", "0"],
+      "gas": 140000,
       "prefix": "osmo"
    },
    "Juno": {
@@ -36,6 +40,8 @@
       "exponent": 6,
       "gasPrice": "0.075ujuno",
       "gasLimitRatio": 1.15,
+      "min_tx_fee": ["625", "0"],
+      "gas": 80000,
       "prefix": "juno"
    },
    "Akash": {
@@ -49,6 +55,8 @@
       "exponent": 6,
       "gasPrice": "0.025uakt",
       "gasLimitRatio": 1.1,
+      "min_tx_fee": ["3000", "120"],
+      "gas": 120000,
       "prefix": "akash"
    },
    "Stargaze": {
@@ -62,6 +70,8 @@
       "exponent": 6,
       "gasPrice": "1ustars",
       "gasLimitRatio": 1.2,
+      "min_tx_fee": ["0", "0"],
+      "gas": 800000,
       "prefix": "stars"
    },
    "Celestia": {
@@ -75,6 +85,8 @@
       "exponent": 6,
       "gasPrice": "0.0020utia",
       "gasLimitRatio": 1.15,
+      "min_tx_fee": ["3000", "120"],
+      "gas": 250000,
       "prefix": "celestia"
    },
    "Dymension": {
@@ -89,6 +101,8 @@
       "gasPrice": "20000000000adym",
       "slip44": 60,
       "gasLimitRatio": 1.2,
+      "min_tx_fee": ["4000000000000000", "0"],
+      "gas": 200000,
       "prefix": "dym"
    },
    "Evmos": {
@@ -103,6 +117,8 @@
       "gasPrice": "25000000000aevmos",
       "slip44": 60,
       "gasLimitRatio": 1.2,
+      "min_tx_fee": ["4000000000000000", "0"],
+      "gas": 200000,
       "prefix": "evmos"
    }
 }

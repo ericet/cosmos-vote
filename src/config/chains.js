@@ -145,6 +145,6 @@ export const chainsList = [
         exponent: 6,
         min_tx_fee: ["3000", "120"],
         gas: 250000,
-        prefix: "stride"
+        prefix: "celestia"
     }
 ];
