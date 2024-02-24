@@ -51,7 +51,7 @@ export default {
           proposals.push({
             proposal_id: proposal.proposal_id,
             vote: proposal.vote,
-            chain: proposal.chain,
+            chain: proposal.chain_name,
             status_code: '',
             status_message: '',
           });

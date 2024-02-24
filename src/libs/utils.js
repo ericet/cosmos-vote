@@ -49,7 +49,7 @@ export function extractAccountNumberAndSequence(ret) {
       tx_bytes: txString,
       mode: 'BROADCAST_MODE_SYNC', 
     }
-    return axios.post(`${chain.rest}/cosmos/tx/v1beta1/txs`, txRaw, chain.id).then(res => {
+    return axios.post(`${chain.rest}/cosmos/tx/v1beta1/txs`, txRaw, chain.chainId).then(res => {
       if (res.code && res.code !== 0) {
         throw new Error(res.message)
       }

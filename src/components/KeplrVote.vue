@@ -81,10 +81,10 @@ export default {
       const signerData = {
         accountNumber: this.account.accountNumber,
         sequence: this.account.sequence,
-        chainId: chain.id,
+        chainId: chain.chainId,
       };
       if (ops.length > 0) {
-        sign(chain.id, this.account.address, ops, fee, '', signerData).then(
+        sign(chain.chainId, this.account.address, ops, fee, '', signerData).then(
           (bodyBytes) => {
             broadcastTx(bodyBytes, chain).then((res) => {
               if (res.data.tx_response.code === 0) {

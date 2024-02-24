@@ -202,30 +202,30 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import ProposalsList from "@/components/ProposalsList.vue";
-import { chainsList } from "../config/chains";
-import KeysInput from "../components/KeysInput.vue";
-import AppFooter from "@/components/AppFooter.vue";
-import KeplrVote from "../components/KeplrVote.vue";
+import axios from 'axios';
+import ProposalsList from '@/components/ProposalsList.vue';
+import chainsMap from '../config/chains.json';
+import KeysInput from '../components/KeysInput.vue';
+import AppFooter from '@/components/AppFooter.vue';
+import KeplrVote from '../components/KeplrVote.vue';
 import {
   QueryClient,
   setupGovExtension,
   setupBankExtension,
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { extractAccountNumberAndSequence } from "@/libs/utils";
+} from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { extractAccountNumberAndSequence } from '@/libs/utils';
 export default {
   created() {
-    for (let chain of chainsList) {
-      this.$store.state.chainMap.set(chain.value, chain);
+    for (let chainName in chainsMap) {
+      this.$store.state.chainMap.set(chainName, chainsMap[chainName]);
     }
     this.populateOptions();
   },
   mounted() {
-    window.addEventListener("keplr_keystorechange", () => {
+    window.addEventListener('keplr_keystorechange', () => {
       this.proposals = [];
-      this.selected = "none";
+      this.selected = 'none';
       this.ready = false;
       this.response = {};
       this.populateOptions();
@@ -233,9 +233,9 @@ export default {
   },
   data() {
     return {
-      selected: "none",
+      selected: 'none',
       proposals: [],
-      chainsList: chainsList,
+      chainsMap: chainsMap,
       ready: false,
       useKeplr: false,
       options: [],
@@ -254,20 +254,20 @@ export default {
     toggle() {
       this.response = {};
       this.proposals = [];
-      this.selected = "none";
+      this.selected = 'none';
       this.ready = false;
       this.populateOptions();
     },
     populateOptions() {
       this.options = [];
-      if (this.useKeplr === "false" || this.useKeplr === false) {
-        this.options.push({ text: "All Chains", value: "all" });
+      if (this.useKeplr === 'false' || this.useKeplr === false) {
+        this.options.push({ text: 'All Chains', value: 'all' });
       }
-      for (let chain of chainsList) {
-        this.options.push({ text: chain.name, value: chain.value });
+      for (let chainName in chainsMap) {
+        this.options.push({ text: chainName, value: chainName });
       }
       this.options.sort((a, b) => {
-        if (a.value === "all" || b.value === "all") {
+        if (a.value === 'all' || b.value === 'all') {
           return 1;
         }
         if (a.value < b.value) {
@@ -306,23 +306,24 @@ export default {
       this.ready = false;
       this.proposals = [];
       this.response = {};
-      if (this.selected === "none") {
+      if (this.selected === 'none') {
         this.proposals = [];
-      } else if (this.selected === "all") {
-        for (let chain of chainsList) {
+      } else if (this.selected === 'all') {
+        for (let chainName in chainsMap) {
+          let chain = chainsMap[chainName];
           axios
             .get(
               `${chain.rest}/cosmos/gov/v1beta1/proposals?pagination.limit=3000`
             )
             .then((res) => {
               let proposals = res.data.proposals.filter((proposal) => {
-                return proposal.status === "PROPOSAL_STATUS_VOTING_PERIOD";
+                return proposal.status === 'PROPOSAL_STATUS_VOTING_PERIOD';
               });
               if (proposals.length > 0) {
                 for (let proposal of proposals) {
-                  proposal.chain = chain.value;
+                  proposal.chain = chainName;
                   proposal.chain_name = chain.name;
-                  proposal.vote = "1";
+                  proposal.vote = '1';
                 }
                 this.proposals = this.proposals.concat(proposals);
               }
@@ -333,6 +334,8 @@ export default {
         }
         this.ready = true;
       } else {
+        console.log(this.selected);
+        console.log(this.$store.state.chainMap)
         let chain = this.$store.state.chainMap.get(this.selected);
 
         const queryClient = await this.getQueryClient(chain.rpc);
@@ -342,19 +345,20 @@ export default {
           )
           .then(async (res) => {
             let proposals = res.data.proposals.filter((proposal) => {
-              return proposal.status === "PROPOSAL_STATUS_VOTING_PERIOD";
+              return proposal.status === 'PROPOSAL_STATUS_VOTING_PERIOD';
             });
-            if (this.useKeplr === true || this.useKeplr === "true") {
+            if (this.useKeplr === true || this.useKeplr === 'true') {
               if (!window.getOfflineSigner || !window.keplr) {
-                alert("Please install keplr extension");
+                alert('Please install keplr extension');
                 return;
               }
-              await window.keplr.enable(chain.id);
-              const offlineSigner = window.getOfflineSigner(chain.id);
+              await window.keplr.enable(chain.chainId);
+              const offlineSigner = window.getOfflineSigner(chain.chainId);
               const accounts = await offlineSigner.getAccounts();
               this.account = accounts[0];
               if (proposals.length > 0) {
                 let chain = this.$store.state.chainMap.get(this.selected);
+                console.log(chain)
                 for (let proposal of proposals) {
                   let voted = await this.hasVoted(
                     queryClient,
@@ -362,9 +366,9 @@ export default {
                     this.account.address
                   );
                   if (!voted) {
-                    proposal.chain = chain.value;
+                    proposal.chain = chain;
                     proposal.chain_name = chain.name;
-                    proposal.vote = "1";
+                    proposal.vote = '1';
                     this.proposals.push(proposal);
                   }
                 }
@@ -381,7 +385,7 @@ export default {
                   })
                   .catch((error) => {
                     if (error.response?.status === 404) {
-                      console.log("Account does not exist on chain");
+                      console.log('Account does not exist on chain');
                     } else {
                       console.log(error);
                     }
@@ -390,9 +394,9 @@ export default {
             } else {
               if (proposals.length > 0) {
                 for (let proposal of proposals) {
-                  proposal.chain = chain.value;
+                  proposal.chain = chain;
                   proposal.chain_name = chain.name;
-                  proposal.vote = "1";
+                  proposal.vote = '1';
                 }
                 this.proposals = this.proposals.concat(proposals);
               }
